@@ -1,0 +1,77 @@
+#!/bin/bash
+
+# target, desitination flag arguments
+dest=''
+target=''
+flagArgs=0
+
+
+# check flags
+while getopts t:d: flag; do
+ case "${flag}" in
+    d) 
+        dest=$OPTARG
+        flagArgs=$(($flagArgs+2))
+        ;;
+
+    t)
+        target=$OPTARG
+        flagArgs=$(($flagArgs+2))
+    ;;
+
+    ?) echo "Sypnosis: organize [-t target-directory] [-d destination-directory] <extension-list>" ;;
+    *) echo "same directory" ;;
+    esac
+done
+
+
+# check extensions from list of args
+allArgs=( "$@" )
+
+# check target/destination paths
+if [ ! -z $dest ]; then
+    if [ -z $target ]; then
+        target="./"
+    fi
+else
+    target="./"
+    dest="./"    
+fi
+
+
+# validate dirs
+if [ ! -d $target ]; then
+    echo "Enter a valid target directory"
+    exit 1
+fi
+
+if [ ! -d $dest ]; then
+    echo "Enter a valid destination directory"
+    exit 1
+fi
+
+#echo "$flagArgs"
+#echo ${allArgs[@]:($flagArgs):($#)}
+
+echo "Organizing files from $target to $dest"
+
+for extension in ${allArgs[@]:($flagArgs):($#)}; do
+    
+    # make dir in destination
+    if [ ! -d "$dest/$extension" ]; then
+        echo "making folder for $extension"
+        mkdir "$dest/$extension"
+    fi
+
+
+    #ls "$target" | grep *"d" # > a.txt
+
+    # mov all files of extension type to dir
+    for fil in $( ls "$target" | grep *".$extension" ); do
+        #echo "$fil"
+
+        mv "$target/$fil" "$dest/$extension"
+        echo "$fil moved to $dest/$extension"
+    done
+
+done
