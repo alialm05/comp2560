@@ -22,6 +22,7 @@ void displayBuffer(char *buffer){
     printf("\n\n");
 }
 
+// write code to file
 int writeToFile(char *buffer, int count){
     int ofd = open("code.txt", O_RDWR | O_CREAT | O_TRUNC, 0644);
 
@@ -34,6 +35,8 @@ int writeToFile(char *buffer, int count){
     exit(0);
 }
 
+
+// reverse capitalization
 int codeSentence(char *buffer, int count){
     
     int i = 0;
@@ -63,6 +66,7 @@ int childFunction(char *buffer, int count){
     codeSentence(buffer, count);
 }
 
+// write code to console
 int outputCode(int byteCount){
     int ofd = open("code.txt", O_RDONLY);
     char b[BufferSize];
@@ -87,6 +91,7 @@ int main(){
         char sentenceBuf[BufferSize] = {0};
         printf("\nEnter a sentance, eg., Good day, my name is BigFoot\n");
     
+        // read from keyboard
         int bytesRead = read(STDIN_FILENO, sentenceBuf, BufferSize);
 
         if (bytesRead < 0){
@@ -94,12 +99,13 @@ int main(){
             return 1;
         }
 
+        // create new child proccess
         pid = fork();
         int status;
     
         if (pid > 0){ // Parent
             printf("\nI just created a child to preform a task for me, waiting for the child\n");
-            wait(&status);
+            wait(&status); // waiting for child to code sentence
 
 
             if (WIFEXITED(status)){
